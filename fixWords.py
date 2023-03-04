@@ -1,18 +1,14 @@
 import json
 import os
-
+from pathlib import Path
 new_json = {}
 words_list = []
-with open("english_word_dict.json", "r") as openfile:
-    json_object = json.load(openfile)
+with open("spanish_words.txt", "r") as openfile:
+    for i, line in enumerate(openfile):
+        new_json[str(i)] = line[:-2]
 
-
-words_list = json_object.keys()
-
-for i, v in enumerate(words_list):
-    new_json[i] = v
-
-with open("english_words.json", "w") as outfile:
+path = Path("./dictionaries/spanish_words.json")
+with open(path, "w") as outfile:
     json.dump(new_json, outfile)
 
     

@@ -1,18 +1,16 @@
 import random 
-import collections
 import bisect
-import numpy
-import math
 import json
-import os
 from pathlib import Path
 
 class randleWord():
     def __init__(self, seed=None, language="en", **kwargs):
         """
-        Languages included are: English- 'en', Mandarin_Chinese- 'ch', Spanish- 'sp', French- 'fr'
+        Languages included are: English- 'en', Spanish- 'sp'. 
+        Working to develop data for Mandarin_Chinese- 'ch', and  French- 'fr'. 
+        Other languages not currently supported
         """
-        valid = { "en", "ch", "sp", "fr" }
+        valid = { "en", "sp" }
 
         if not isinstance(seed, (type(None), int, float, str, bytes, bytearray)):
             raise TypeError(f"{seed} is not of type Nonetype, int, float, str, bytes, bytearray")
@@ -38,15 +36,18 @@ class randleWord():
         # english
         if self.language == "en":
             _relative_path = Path("./dictionaries/english_words.json")
+        
         # mandarin chinese
-        elif self.language == "ch":
-            _relative_path = Path("./dictionaries/chinese_words.json")
+        # elif self.language == "ch":
+        #     _relative_path = Path("./dictionaries/chinese_words.json")
+        
         # spanish
         elif self.language == "sp":
             _relative_path = Path("./dictionaries/spanish_words.json")
+        
         # french
-        elif self.language == "fr":
-            _relative_path = Path("./dictionaries/french_words.json")
+        # elif self.language == "fr":
+        #     _relative_path = Path("./dictionaries/french_words.json")
 
         with open(_relative_path, 'r') as openfile:
             dict_object = json.load(openfile)
@@ -183,8 +184,71 @@ class randleWord():
                     word_choices.add(sorted_word_array[rand_index])
                 return word_choices
     
-    def randWordSample(self):
-        return 
+    def randWordSample(self, choiceLength, wordLength=None, minWordLength=0, maxWordLength=32, startsWith=''):
+        if not isinstance(choiceLength, int):
+            raise TypeError(f"sampleLength must be of type int. You supplied {type(choiceLength)}")
+        
+        self.__catch_type_and_value_errors(wordLength, minWordLength, maxWordLength, startsWith)
+
+        word_choices = []
+        # Simple case if no wordLength is specified
+        if not wordLength:
+            # Everything is default
+            if minWordLength == 0 and maxWordLength == 32 and startsWith == '': 
+                while len(word_choices) < choiceLength:
+                    rand_index = random.randrange(0, self.dict_length)
+                    word_choices.append(self.word_dict[str(rand_index)])
+                return word_choices
+            
+            # only minWordLength is specified
+            elif minWordLength != 0 and maxWordLength == 32 and startsWith == '':
+                sorted_word_array, min_range = self.__sorted_array_and_find_length_range(_minWordLength=minWordLength)
+                while len(word_choices) < choiceLength:
+                    rand_index = random.randrange(min_range, len(sorted_word_array))
+                    word_choices.append(sorted_word_array[rand_index])
+                return word_choices
+
+            # only maxWordLength is specified
+            elif maxWordLength != 32 and minWordLength == 0 and startsWith == '':
+                sorted_word_array, max_range = self.__sorted_array_and_find_length_range(_maxWordLength=maxWordLength)
+                while len(word_choices) < choiceLength:
+                    rand_index = random.randrange(0, max_range)
+                    word_choices.append(sorted_word_array[rand_index])
+                return word_choices
+            
+            # minWordLength is specified and startsWith is specified
+            elif (minWordLength != 0 or maxWordLength != 32) and startsWith != '':
+                # find length range
+                sorted_word_array, min_range = self.__sorted_array_and_find_length_range(_minWordLength=minWordLength)
+                _, max_range = self.__sorted_array_and_find_length_range(_maxWordLength=maxWordLength)
+                # find alphabetic range
+                sorted_word_array, min_range, max_range = self.__sorted_array_and_find_alph_range(sorted_word_array, _startsWith=startsWith, _minRange=min_range, _maxRange=max_range)
+                while len(word_choices) < choiceLength:
+                    rand_index = random.randrange(min_range, max_range)
+                    word_choices.append(sorted_word_array[rand_index])
+                return word_choices
+        
+        # If wordLength is explicity specified, ignore the ranges
+        else:
+            if startsWith == '':
+                sorted_word_array, min_range = self.__sorted_array_and_find_length_range(_minWordLength=wordLength)
+                _, max_range = self.__sorted_array_and_find_length_range(_maxWordLength=wordLength)
+                while len(word_choices) < choiceLength:
+                    rand_index = random.randrange(min_range, max_range)
+                    word_choices.append(sorted_word_array[rand_index])
+                return word_choices
+            
+            else:
+                sorted_word_array, min_range = self.__sorted_array_and_find_length_range(_min_wordLength=wordLength)
+                _, max_range = self.__sorted_array_and_find_length_range(_maxWordLength=wordLength)
+                
+                # return the full range
+                sorted_word_array, min_range, max_range = self.__sorted_array_and_find_alph_range(sorted_word_array, startsWith, _minRange=min_range, _maxRange=max_range)
+                while len(word_choices) < choiceLength:
+                    rand_index = random.randrange(min_range, max_range)
+                    word_choices.append(sorted_word_array[rand_index])
+                return word_choices
+
     
     def __find_left_bound(self, _dct_array, _minWordLength, _startsWith):
         """
@@ -307,7 +371,9 @@ class randleWord():
 _inst = randleWord()
 seed = _inst.seed
     
-
+"""
+______________________________________________________________
+"""
 
 
 
