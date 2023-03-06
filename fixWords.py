@@ -1,6 +1,8 @@
 import json
 import os
 from pathlib import Path
+
+## Used as a utility to bend the word lists to my will
 new_json = {}
 words_list = []
 with open("spanish_words.txt", "r") as openfile:

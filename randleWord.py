@@ -35,7 +35,7 @@ class randleWord():
         """
         # english
         if self.language == "en":
-            _relative_path = Path("./dictionaries/english_words.json")
+            _abs_path = Path("/randleword/dictionaries/english_words.json")
         
         # mandarin chinese
         # elif self.language == "ch":
@@ -43,13 +43,13 @@ class randleWord():
         
         # spanish
         elif self.language == "sp":
-            _relative_path = Path("./dictionaries/spanish_words.json")
+            _abs_path = Path("/randleword/dictionaries/spanish_words.json")
         
         # french
         # elif self.language == "fr":
         #     _relative_path = Path("./dictionaries/french_words.json")
 
-        with open(_relative_path, 'r') as openfile:
+        with open(_abs_path, 'r') as openfile:
             dict_object = json.load(openfile)
 
         return dict_object
