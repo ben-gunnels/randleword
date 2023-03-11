@@ -45,8 +45,8 @@ Echos the random.choice() function by generating a single random word from the d
 ###### Returns:
   String
  
-#### randWordChoices
-Echos the random.choice() function in conjunction with a for loop to populate a set of a specified length given a users specifications. Words in the set will be unique.
+#### randWordSample
+Echos the random.sample() function in conjunction with a for loop to populate a set of a specified length given a users specifications. Words in the set will be unique.
 
 ##### Parameters:
   choiceLength:
