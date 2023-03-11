@@ -116,7 +116,7 @@ class randleWord():
                 rand_index = random.randrange(min_range, max_range)
                 return sorted_word_array[rand_index]
 
-    def randWordChoices(self, choiceLength, wordLength=None, minWordLength=0, maxWordLength=32, startsWith=''):
+    def randWordSample(self, choiceLength, wordLength=None, minWordLength=0, maxWordLength=32, startsWith=''):
         """
         Returns a choice of random words given a sampleLength, or size of array, wordLength, or minWordLength, maxWordLength
         """
@@ -184,7 +184,7 @@ class randleWord():
                     word_choices.add(sorted_word_array[rand_index])
                 return word_choices
     
-    def randWordSample(self, choiceLength, wordLength=None, minWordLength=0, maxWordLength=32, startsWith=''):
+    def randWordChoices(self, choiceLength, wordLength=None, minWordLength=0, maxWordLength=32, startsWith=''):
         if not isinstance(choiceLength, int):
             raise TypeError(f"sampleLength must be of type int. You supplied {type(choiceLength)}")
         
@@ -375,6 +375,7 @@ seed = _inst.seed
 ______________________________________________________________
 """
 
+# Build tests
 
 
 
